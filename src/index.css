@@ -1,0 +1,28 @@
+﻿:root {
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.45;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: auto;
+  overflow-y: scroll;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-width: 320px;
+}
+
+a {
+  color: inherit;
+}
+
