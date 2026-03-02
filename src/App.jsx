@@ -8,6 +8,14 @@ import ReglamentoView from './views/ReglamentoView'
 import ContactView from './views/ContactView'
 import { getRouteFromHash } from './utils/routing'
 
+const routeTitles = {
+  inicio: 'Inicio',
+  equipo: 'Informacion',
+  club: 'Club',
+  reglamento: 'Reglamento',
+  contacto: 'Contacto',
+}
+
 function App() {
   const [currentRoute, setCurrentRoute] = useState(getRouteFromHash(window.location.hash || '#/'))
 
@@ -24,6 +32,10 @@ function App() {
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [])
+
+  useEffect(() => {
+    document.title = routeTitles[currentRoute] || 'RED Toluca-Cuna de campeones'
+  }, [currentRoute])
 
   return (
     <div className="page">

@@ -6,8 +6,8 @@ function HomeView() {
           <p className="kicker">Pasion por el futbol</p>
           <h1>Un club, una aficion que nunca se rinde.</h1>
           <p>
-            Promocionamos nuestro equipo y compartimos toda la informacion del club:
-            jugadores, resultados, eventos y actividades para la comunidad.
+            Promovemos la formacion futbolistica, compartimos informacion del club,
+            entrenamientos, becas, eventos y el trabajo con nuestras categorias.
           </p>
           <a className="cta" href="#/contacto">Unete al club</a>
         </div>
