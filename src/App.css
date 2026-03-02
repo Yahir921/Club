@@ -240,6 +240,99 @@ main {
   padding: 1rem;
 }
 
+.club-docs-head {
+  max-width: 980px;
+}
+
+.club-doc-grid {
+  margin-top: 1.3rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.club-doc-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1.15rem 1.2rem;
+  box-shadow: 0 8px 24px rgba(20, 20, 20, 0.05);
+}
+
+.club-doc-card h3 {
+  margin: 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.7rem;
+  letter-spacing: 0.02em;
+}
+
+.club-number-list,
+.club-bullet-list {
+  margin: 0.85rem 0 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.club-number-list li,
+.club-bullet-list li {
+  line-height: 1.45;
+}
+
+.club-number-list.compact {
+  gap: 0.4rem;
+}
+
+.club-note {
+  margin: 0.85rem 0 0;
+  line-height: 1.45;
+}
+
+.club-bullet-list.two-columns {
+  columns: 2;
+  column-gap: 1.5rem;
+  display: block;
+}
+
+.club-bullet-list.two-columns li {
+  break-inside: avoid;
+  margin-bottom: 0.55rem;
+}
+
+.club-cost-grid {
+  margin-top: 0.9rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.club-cost-item {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  padding: 0.8rem;
+}
+
+.club-cost-title {
+  margin: 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.85rem;
+}
+
+.club-cost-value {
+  margin: 0.35rem 0 0;
+  color: var(--accent-dark);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.club-cost-text {
+  margin: 0.45rem 0 0;
+  line-height: 1.42;
+}
+
 .info-grid {
   margin-top: 1.2rem;
   display: grid;
@@ -519,6 +612,14 @@ main {
   }
 
   .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .club-bullet-list.two-columns {
+    columns: 1;
+  }
+
+  .club-cost-grid {
     grid-template-columns: 1fr;
   }
 

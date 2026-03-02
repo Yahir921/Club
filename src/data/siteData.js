@@ -22,6 +22,7 @@ export const navItems = [
   { key: 'inicio', label: 'Inicio', href: '#/' },
   { key: 'equipo', label: 'Informacion', href: '#/equipo' },
   { key: 'club', label: 'Club', href: '#/club' },
+  { key: 'reglamento', label: 'Reglamento', href: '#/reglamento' },
   { key: 'contacto', label: 'Contacto', href: '#/contacto' },
 ]
 
@@ -29,5 +30,6 @@ export const routeMap = {
   '#/': 'inicio',
   '#/equipo': 'equipo',
   '#/club': 'club',
+  '#/reglamento': 'reglamento',
   '#/contacto': 'contacto',
 }
