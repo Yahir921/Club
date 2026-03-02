@@ -86,6 +86,32 @@
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
+.nav-toggle {
+  display: none;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0.1rem 0.2rem;
+  box-shadow: none;
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-toggle-bar {
+  display: block;
+  width: 14px;
+  height: 2px;
+  background: #111;
+  margin: 2px 0;
+  border-radius: 999px;
+}
+
+.nav-drawer {
+  display: none;
+}
+
 .nav-links a {
   color: var(--ink);
   text-decoration: none;
@@ -98,7 +124,6 @@
 
 .nav-links a:hover,
 .nav-links a:focus-visible {
-  background: rgba(137, 22, 13, 0.1);
   color: var(--accent-dark);
   transform: translateY(-1px);
   outline: none;
@@ -817,22 +842,101 @@ main {
     top: 0;
     width: 100%;
     border-radius: 0;
-    padding: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   .brand {
-    width: 100%;
-    text-align: center;
+    width: auto;
+    text-align: left;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.4rem;
   }
 
   .brand-icon {
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
   }
 
   .nav-links {
-    width: 100%;
+    display: none;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
+    margin-left: 0.35rem;
+    margin-top: -2px;
+  }
+
+  .nav-drawer {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    padding: 0;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(100%);
+    transition: transform 220ms ease, opacity 220ms ease;
+    z-index: 200;
+  }
+
+  .nav-drawer.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
+
+  .nav-drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    background: linear-gradient(135deg, rgba(187, 45, 31, 0.18), rgba(255, 216, 185, 0.5));
+    color: var(--accent-dark);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .nav-close {
+    border: 0;
+    background: transparent;
+    color: var(--accent-dark);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .nav-drawer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.2rem 1.2rem 2rem;
+    background: var(--bg);
+  }
+
+  .nav-drawer-links a {
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 700;
+    padding: 0.7rem 0.6rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+  }
+
+  .nav-drawer-links a.is-active {
+    color: var(--accent-dark);
+    background: transparent;
+    border-color: transparent;
   }
 
   .hero-content {
@@ -865,3 +969,125 @@ main {
     text-align: left;
   }
 }
+
+@media (max-width: 360px) {
+  .hero {
+    min-height: 70vh;
+    padding: 1rem 1rem 2.5rem;
+  }
+
+  .hero h1 {
+    font-size: 2.1rem;
+  }
+
+  .hero p {
+    font-size: 0.98rem;
+  }
+
+  .cta {
+    padding: 0.75rem 1.1rem;
+  }
+
+  main {
+    padding: 2rem 1rem;
+  }
+
+  .gallery {
+    gap: 0.8rem;
+    padding: 0 1rem 2rem;
+  }
+
+  .gallery-item {
+    border-radius: 14px;
+  }
+
+  .club-layout {
+    gap: 1rem;
+  }
+
+  .club-panel {
+    padding: 1rem;
+  }
+
+  .club-line {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .club-value {
+    font-size: 0.95rem;
+  }
+
+  .club-grid {
+    gap: 0.8rem;
+  }
+
+  .club-grid-tight .club-card {
+    padding: 1rem;
+  }
+
+  .info-block h3 {
+    font-size: 1.35rem;
+  }
+}
+
+@media (min-width: 361px) and (max-width: 420px) {
+  .hero h1 {
+    font-size: 2.4rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .cta {
+    padding: 0.8rem 1.2rem;
+  }
+
+  main {
+    padding: 2.4rem 1.2rem;
+  }
+
+  .gallery {
+    gap: 0.9rem;
+    padding: 0 1.2rem 2.2rem;
+  }
+
+  .club-panel {
+    padding: 1.1rem 1.2rem;
+  }
+
+  .club-line {
+    gap: 0.6rem;
+  }
+}
+
+@media (min-width: 421px) and (max-width: 480px) {
+  .hero h1 {
+    font-size: 2.7rem;
+  }
+
+  .hero p {
+    font-size: 1.02rem;
+  }
+
+  .cta {
+    padding: 0.85rem 1.3rem;
+  }
+
+  main {
+    padding: 2.6rem 1.4rem;
+  }
+
+  .gallery {
+    padding: 0 1.4rem 2.4rem;
+  }
+}
+  .nav-toggle {
+    margin-left: auto;
+  }
+  .nav-drawer-links a:hover,
+  .nav-drawer-links a:focus-visible {
+    color: var(--accent-dark);
+    background: transparent;
+  }
