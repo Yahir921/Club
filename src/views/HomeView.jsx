@@ -1,5 +1,3 @@
-import { stats } from '../data/siteData'
-
 function HomeView() {
   return (
     <>
@@ -15,13 +13,16 @@ function HomeView() {
         </div>
       </header>
 
-      <section className="stats" aria-label="Estadisticas del club">
-        {stats.map((item) => (
-          <article key={item.label} className="stat-card">
-            <p className="stat-value">{item.value}</p>
-            <p className="stat-label">{item.label}</p>
-          </article>
-        ))}
+      <section className="gallery" aria-label="Galeria del club">
+        <figure className="gallery-item">
+          <img src="/galeria/Imagen 1.jpeg" alt="Equipo infantil en la cancha" />
+        </figure>
+        <figure className="gallery-item">
+          <img src="/galeria/Imagen 2.jpeg" alt="Equipo celebrando en evento" />
+        </figure>
+        <figure className="gallery-item">
+          <img src="/galeria/Imagen 3.jpeg" alt="Estadio lleno en partido" />
+        </figure>
       </section>
     </>
   )
