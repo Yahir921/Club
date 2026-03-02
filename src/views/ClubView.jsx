@@ -6,9 +6,9 @@ function ClubView() {
       <section className="section about">
         <div>
           <p className="section-tag">Sobre el club</p>
-          <h2>Informacion institucional del Club Toluca</h2>
+          <h2>Informacion institucional del RED Toluca-Cuna de campeones</h2>
           <p>
-            Club Toluca impulsa talento juvenil y futbol competitivo con una vision
+            RED Toluca-Cuna de campeones impulsa talento juvenil y futbol competitivo con una vision
             formativa. Trabajamos disciplina, valores y rendimiento para representar
             al barrio con orgullo en cada torneo.
           </p>

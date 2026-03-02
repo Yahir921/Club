@@ -9,7 +9,7 @@ function ContactView() {
         <div className="club-grid">
           <article className="club-card">
             <h3>Email</h3>
-            <p>contacto@clubtoluca.com</p>
+            <p>contacto@redtoluca.com</p>
           </article>
           <article className="club-card">
             <h3>Telefono</h3>
