@@ -9,8 +9,8 @@ function ClubView() {
           <h2>Informacion institucional del RED Toluca-Cuna de campeones</h2>
           <p>
             RED Toluca-Cuna de campeones impulsa talento juvenil y futbol competitivo con una vision
-            formativa. Trabajamos disciplina, valores y rendimiento para representar
-            al barrio con orgullo en cada torneo.
+            formativa. Trabajamos disciplina, valores y rendimiento para representar al barrio con
+            orgullo en cada torneo.
           </p>
           <div className="club-grid">
             {clubInfo.map((item) => (
@@ -21,6 +21,7 @@ function ClubView() {
             ))}
           </div>
         </div>
+
         <div className="about-box">
           <p>Entrenamientos:</p>
           <strong>Lunes a Viernes - 17:00 a 19:30</strong>
@@ -28,6 +29,8 @@ function ClubView() {
           <strong>Juvenil y Mayor</strong>
           <p>Director tecnico:</p>
           <strong>Carlos Herrera</strong>
+          <p>Reglamento:</p>
+          <strong>Disponible en el apartado "Reglamento"</strong>
         </div>
       </section>
     </main>
