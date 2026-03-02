@@ -18,38 +18,10 @@ export const clubInfo = [
   { title: 'Valores', text: 'Respeto, trabajo en equipo, esfuerzo y juego limpio.' },
 ]
 
-export const fixtures = [
-  {
-    date: '03 Mar 2026',
-    hour: '19:00',
-    tournament: 'Liga Municipal - Jornada 5',
-    match: 'RED Toluca-Cuna de campeones vs Halcones FC',
-    stadium: 'Estadio Central',
-    details: 'Partido clave para mantener el liderato de grupo.',
-  },
-  {
-    date: '10 Mar 2026',
-    hour: '18:30',
-    tournament: 'Liga Municipal - Jornada 6',
-    match: 'Atletico Norte vs RED Toluca-Cuna de campeones',
-    stadium: 'Cancha Norte',
-    details: 'Visita dificil ante un rival directo en la tabla.',
-  },
-  {
-    date: '17 Mar 2026',
-    hour: '20:00',
-    tournament: 'Liga Municipal - Jornada 7',
-    match: 'RED Toluca-Cuna de campeones vs Real Valle',
-    stadium: 'Estadio Central',
-    details: 'Encuentro especial con activaciones para la aficion.',
-  },
-]
-
 export const navItems = [
   { key: 'inicio', label: 'Inicio', href: '#/' },
   { key: 'equipo', label: 'Informacion', href: '#/equipo' },
   { key: 'club', label: 'Club', href: '#/club' },
-  { key: 'partidos', label: 'Partidos', href: '#/partidos' },
   { key: 'contacto', label: 'Contacto', href: '#/contacto' },
 ]
 
@@ -57,6 +29,5 @@ export const routeMap = {
   '#/': 'inicio',
   '#/equipo': 'equipo',
   '#/club': 'club',
-  '#/partidos': 'partidos',
   '#/contacto': 'contacto',
 }

@@ -59,6 +59,20 @@
   border-radius: 0;
   background: transparent;
   border: 0;
+  white-space: nowrap;
+}
+
+.brand-icon {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 0.45rem;
+  transform: translateY(-2px);
+}
+
+.brand-title {
+  vertical-align: middle;
 }
 
 .nav-links {
@@ -525,6 +539,11 @@ main {
   .brand {
     width: 100%;
     text-align: center;
+  }
+
+  .brand-icon {
+    width: 30px;
+    height: 30px;
   }
 
   .nav-links {

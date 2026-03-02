@@ -4,7 +4,6 @@ import Nav from './components/Nav'
 import HomeView from './views/HomeView'
 import TeamView from './views/TeamView'
 import ClubView from './views/ClubView'
-import MatchesView from './views/MatchesView'
 import ContactView from './views/ContactView'
 import { getRouteFromHash } from './utils/routing'
 
@@ -32,7 +31,6 @@ function App() {
       {currentRoute === 'inicio' && <HomeView />}
       {currentRoute === 'equipo' && <TeamView />}
       {currentRoute === 'club' && <ClubView />}
-      {currentRoute === 'partidos' && <MatchesView />}
       {currentRoute === 'contacto' && <ContactView />}
 
     </div>
