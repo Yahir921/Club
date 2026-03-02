@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState } from 'react'
 import './App.css'
 import Nav from './components/Nav'
+import Footer from './components/Footer'
 import HomeView from './views/HomeView'
 import TeamView from './views/TeamView'
 import ClubView from './views/ClubView'
@@ -34,6 +35,8 @@ function App() {
       {currentRoute === 'club' && <ClubView />}
       {currentRoute === 'partidos' && <MatchesView />}
       {currentRoute === 'contacto' && <ContactView />}
+
+      <Footer />
     </div>
   )
 }

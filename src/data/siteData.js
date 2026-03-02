@@ -47,7 +47,7 @@ export const fixtures = [
 
 export const navItems = [
   { key: 'inicio', label: 'Inicio', href: '#/' },
-  { key: 'equipo', label: 'Equipo', href: '#/equipo' },
+  { key: 'equipo', label: 'Informacion', href: '#/equipo' },
   { key: 'club', label: 'Club', href: '#/club' },
   { key: 'partidos', label: 'Partidos', href: '#/partidos' },
   { key: 'contacto', label: 'Contacto', href: '#/contacto' },

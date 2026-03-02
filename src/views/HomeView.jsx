@@ -6,7 +6,7 @@ function HomeView() {
       <header className="hero">
         <div className="hero-content">
           <p className="kicker">Pasion por el futbol</p>
-          <h1>Un club, una historia, una aficion que nunca se rinde.</h1>
+          <h1>Un club, una aficion que nunca se rinde.</h1>
           <p>
             Promocionamos nuestro equipo y compartimos toda la informacion del club:
             jugadores, resultados, eventos y actividades para la comunidad.
