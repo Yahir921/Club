@@ -83,6 +83,9 @@ function ReglamentoView() {
             una relacion cordial, estructurada y ordenada entre jugador, padre de familia y centro
             de formacion.
           </p>
+          <a className="doc-download-btn" href="/solicitud-inscripcion.pdf" download>
+            Descargar solicitud
+          </a>
         </div>
 
         <div className="club-doc-grid">

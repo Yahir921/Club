@@ -270,6 +270,25 @@ main {
   max-width: 980px;
 }
 
+.doc-download-btn {
+  display: inline-block;
+  margin-top: 0.8rem;
+  text-decoration: none;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.doc-download-btn:hover,
+.doc-download-btn:focus-visible {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  outline: none;
+}
+
 .club-doc-grid {
   margin-top: 1.3rem;
   display: grid;
@@ -641,18 +660,17 @@ main {
     grid-template-columns: 1fr;
   }
 
-<<<<<<< HEAD
   .gallery {
     grid-template-columns: 1fr;
     margin-top: 0;
-=======
+  }
+
   .club-bullet-list.two-columns {
     columns: 1;
   }
 
   .club-cost-grid {
     grid-template-columns: 1fr;
->>>>>>> 13e00b176e89f3d0594b9eac6e86a2032aa13861
   }
 
   .team-grid {
