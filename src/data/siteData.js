@@ -37,6 +37,7 @@ export const clubInfo = [
 
 export const navItems = [
   { key: 'inicio', label: 'Inicio', href: '#/' },
+  { key: 'eventos', label: 'Eventos', href: '#/eventos' },
   { key: 'equipo', label: 'Informacion', href: '#/equipo' },
   { key: 'club', label: 'Club', href: '#/club' },
   { key: 'reglamento', label: 'Reglamento', href: '#/reglamento' },
@@ -45,6 +46,7 @@ export const navItems = [
 
 export const routeMap = {
   '#/': 'inicio',
+  '#/eventos': 'eventos',
   '#/equipo': 'equipo',
   '#/club': 'club',
   '#/reglamento': 'reglamento',

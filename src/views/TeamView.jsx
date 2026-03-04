@@ -43,18 +43,6 @@ function TeamView() {
           </article>
 
           <article className="info-block">
-            <h3>Direccion</h3>
-            <ul className="info-list">
-              <li><strong>Sede Camino a Santiago</strong></li>
-              <li>CALLE CAMINO A SANTIAGO S/N, COL. EJIDOS DE SAN MATEO IXTACALCO.</li>
-              <li>FRACC. SANTIAGO (CAMPOS MORLAN), CUAUTITLAN, EDOMEX.</li>
-              <li>ESTADO DE MEXICO.</li>
-              <li><strong>Sede Canchas GEO</strong></li>
-              <li>BAHIAS DE JALTENCO, ALBORADA JALTENCO (CANCHAS GEO).</li>
-            </ul>
-          </article>
-
-          <article className="info-block">
             <h3>Estructura deportiva</h3>
             <ul className="info-list">
               <li>Director General: D.T. Victor Miguel Salinas A.</li>

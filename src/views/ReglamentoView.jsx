@@ -132,9 +132,9 @@ function ReglamentoView() {
             <h3>Estructura costo y pago</h3>
             <div className="club-cost-grid">
               <div className="club-cost-item">
-                <p className="club-cost-title">Anualidad 2025</p>
+                <p className="club-cost-title">Anualidad 2026</p>
                 <p className="club-cost-value">$500.00 M.N.</p>
-                <p className="club-cost-text">Fecha de referencia: 15 de noviembre de 2025.</p>
+                <p className="club-cost-text">Fecha de referencia: 15 de noviembre de 2026.</p>
               </div>
               <div className="club-cost-item">
                 <p className="club-cost-title">Inscripcion nuevo ingreso</p>

@@ -2,6 +2,7 @@
 import './App.css'
 import Nav from './components/Nav'
 import HomeView from './views/HomeView'
+import EventosView from './views/EventosView'
 import TeamView from './views/TeamView'
 import ClubView from './views/ClubView'
 import ReglamentoView from './views/ReglamentoView'
@@ -10,6 +11,7 @@ import { getRouteFromHash } from './utils/routing'
 
 const routeTitles = {
   inicio: 'Inicio',
+  eventos: 'Eventos',
   equipo: 'Informacion',
   club: 'Club',
   reglamento: 'Reglamento',
@@ -42,6 +44,7 @@ function App() {
       <Nav current={currentRoute} />
 
       {currentRoute === 'inicio' && <HomeView />}
+      {currentRoute === 'eventos' && <EventosView />}
       {currentRoute === 'equipo' && <TeamView />}
       {currentRoute === 'club' && <ClubView />}
       {currentRoute === 'reglamento' && <ReglamentoView />}
