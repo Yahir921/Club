@@ -1,16 +1,62 @@
-# React + Vite
+# Club Toluca - Sitio informativo + Admin de eventos
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto tiene:
+- Frontend en React (sitio publico).
+- Backend en PHP (login admin sin roles + CRUD de eventos).
 
-Currently, two official plugins are available:
+## Rutas importantes
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Sitio publico: `#/`, `#/eventos`, `#/equipo`, etc.
+- Login admin oculto: `#/Login-Toluca`
 
-## React Compiler
+## Backend PHP
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Carpeta: `api/`
 
-## Expanding the ESLint configuration
+Archivos:
+- `api/config.php`: credenciales de MySQL.
+- `api/auth.php`: login, logout y estado de sesion.
+- `api/events.php`: lista publica y CRUD protegido.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Base de datos
+
+1. Crea una base de datos (ejemplo: `club_toluca`).
+2. Ejecuta el script [database/schema.sql](/c:/Users/LENOVO/Documents/Toluca/Club/Club/database/schema.sql).
+3. Configura `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS` en [api/config.php](/c:/Users/LENOVO/Documents/Toluca/Club/Club/api/config.php).
+
+## Crear usuario admin (sin roles)
+
+Genera hash de tu contrasena en PHP:
+
+```bash
+php -r "echo password_hash('TuContrasenaSegura', PASSWORD_DEFAULT), PHP_EOL;"
+```
+
+Inserta el admin en MySQL:
+
+```sql
+INSERT INTO admins (username, password_hash)
+VALUES ('admin_toluca', 'AQUI_TU_HASH');
+```
+
+## Conexion frontend -> backend
+
+El frontend usa `VITE_API_BASE_URL` y por defecto apunta a `/api`.
+
+Si en desarrollo tu PHP corre en otro host/puerto, crea `.env`:
+
+```bash
+VITE_API_BASE_URL=http://localhost/Club/api
+```
+
+## Comandos
+
+```bash
+npm install
+npm run dev
+npm run lint
+```
+
+## Nota de seguridad
+
+La URL oculta no protege por si sola. La proteccion real esta en PHP con sesion y validacion de endpoints.

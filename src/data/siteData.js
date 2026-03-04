@@ -51,4 +51,5 @@ export const routeMap = {
   '#/club': 'club',
   '#/reglamento': 'reglamento',
   '#/contacto': 'contacto',
+  '#/Login-Toluca': 'adminLogin',
 }

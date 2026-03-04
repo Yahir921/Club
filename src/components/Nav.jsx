@@ -5,10 +5,6 @@ function Nav({ current }) {
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
-    setIsOpen(false)
-  }, [current])
-
-  useEffect(() => {
     if (!isOpen) {
       return undefined
     }

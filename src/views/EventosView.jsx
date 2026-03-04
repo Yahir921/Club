@@ -1,34 +1,38 @@
+import { useEffect, useState } from 'react'
+import { apiRequest } from '../utils/api'
+
 function EventosView() {
-  const upcomingEvents = [
-    {
-      title: 'Clinica de futbol formativo',
-      date: 'Sabado 16 de marzo, 9:00 AM',
-      place: 'Campos Morlan (Sede Cuautitlan)',
-      details: 'Sesion especial para tecnica individual, coordinacion y definicion por categorias.',
-      image: '/icono-red-toluca.png',
-    },
-    {
-      title: 'Visoria interna RED Toluca',
-      date: 'Domingo 24 de marzo, 8:30 AM',
-      place: 'Canchas GEO (Sede Jaltenco)',
-      details: 'Evaluacion deportiva para seguimiento de jugadores con proyeccion competitiva.',
-      image: '/icono-red-toluca.png',
-    },
-    {
-      title: 'Torneo amistoso intersedes',
-      date: 'Sabado 6 de abril, 10:00 AM',
-      place: 'Canchas GEO y Campos Morlan',
-      details: 'Jornada de partidos entre categorias para fortalecer ritmo de competencia.',
-      image: '/icono-red-toluca.png',
-    },
-    {
-      title: 'Convivencia familiar del club',
-      date: 'Domingo 21 de abril, 1:00 PM',
-      place: 'Instalaciones del club',
-      details: 'Actividad de integracion entre jugadores, entrenadores y familias.',
-      image: '/icono-red-toluca.png',
-    },
-  ]
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadEvents = async () => {
+      try {
+        const data = await apiRequest('/events.php')
+        if (isMounted) {
+          setEvents(data.events || [])
+          setError('')
+        }
+      } catch {
+        if (isMounted) {
+          setEvents([])
+          setError('No se pudieron cargar los eventos en este momento.')
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    loadEvents()
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   return (
     <main>
@@ -42,19 +46,27 @@ function EventosView() {
           </p>
         </div>
 
-        <div className="info-grid">
-          {upcomingEvents.map((event) => (
-            <article key={event.title} className="info-block event-card">
-              <img className="event-image" src={event.image} alt={event.title} />
-              <h3>{event.title}</h3>
-              <ul className="info-list">
-                <li><strong>Fecha:</strong> {event.date}</li>
-                <li><strong>Sede:</strong> {event.place}</li>
-                <li>{event.details}</li>
-              </ul>
-            </article>
-          ))}
-        </div>
+        {loading && <p className="event-empty">Cargando eventos...</p>}
+        {!loading && error && <p className="event-empty">{error}</p>}
+        {!loading && !error && events.length === 0 && (
+          <p className="event-empty">Aun no hay eventos publicados.</p>
+        )}
+
+        {!loading && !error && events.length > 0 && (
+          <div className="info-grid">
+            {events.map((event) => (
+              <article key={event.id} className="info-block event-card">
+                <img className="event-image" src={event.image} alt={event.title} />
+                <h3>{event.title}</h3>
+                <ul className="info-list">
+                  <li><strong>Fecha:</strong> {event.date}</li>
+                  <li><strong>Sede:</strong> {event.place}</li>
+                  <li>{event.details}</li>
+                </ul>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
     </main>
   )
