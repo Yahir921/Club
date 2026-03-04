@@ -13,9 +13,26 @@ export const players = [
 ]
 
 export const clubInfo = [
-  { title: 'Mision', text: 'Desarrollar talento deportivo con disciplina, identidad y compromiso social.' },
-  { title: 'Vision', text: 'Ser un club referente en formacion y competencia regional.' },
-  { title: 'Valores', text: 'Respeto, trabajo en equipo, esfuerzo y juego limpio.' },
+  {
+    title: 'Mision',
+    text: 'Ser una organizacion de vanguardia formando seres humanos integrales con disciplina, dedicacion, respeto y adaptacion, utilizando fundamentos fisicos, tecnicos, psicologicos y academicos para el desarrollo del futbol.',
+  },
+  {
+    title: 'Vision',
+    text: 'Promover el desarrollo deportivo, academico, comercial, social y cultural, formando alumnos profesionales en el area futbolistica.',
+  },
+  {
+    title: 'Valores',
+    text: 'Pasion, innovacion, integridad, disciplina, constancia y compromiso.',
+  },
+  {
+    title: 'Objetivo',
+    text: 'Lograr alumnos y padres comprometidos, con responsabilidad, mentalidad ganadora e identidad con Toluca F.C.',
+  },
+  {
+    title: 'Caracteristicas',
+    text: 'Proceso formativo para alcanzar el exito con responsabilidad, constancia, perseverancia, dedicacion, disciplina, actitud y respeto.',
+  },
 ]
 
 export const navItems = [

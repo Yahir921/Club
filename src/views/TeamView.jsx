@@ -9,36 +9,36 @@ function TeamView() {
 
         <div className="info-grid">
           <article className="info-block">
-            <h3>Torneos avalados por la FMF</h3>
+            <h3>Metodologia (6 a 14 años)</h3>
             <ul className="info-list">
-              <li>Locales, regionales, nacionales e inter redes.</li>
-              <li>Torneos en estadios de 1a div. profesional.</li>
-              <li>Ligas mas importantes de Edo. Mexico.</li>
-              <li>Visorias oficiales y profesionales.</li>
+              <li>Familiarizacion (6 a 8): capacidades fisicas y desarrollo motor.</li>
+              <li>Iniciacion (9 a 11): control corporal y tecnica basica.</li>
+              <li>Desarrollo (12 a 14): fundamentos ofensivos y defensivos.</li>
             </ul>
           </article>
 
           <article className="info-block">
-            <h3>Cantera y entrenadores</h3>
+            <h3>Metodologia (15 a 35 años)</h3>
             <ul className="info-list">
-              <li>Cantera de jugadores en fuerzas basicas.</li>
-              <li>Entrenadores capacitados y avalados por: SEP-CONADE-FMF.</li>
+              <li>Aplicacion (15 a 16): ubicacion y aplicacion de sistemas de juego.</li>
+              <li>Ejecucion (17 a 19): deteccion y adaptacion al futbol profesional.</li>
+              <li>Todas las anteriores (20 a 35): disciplina y constancia competitiva.</li>
             </ul>
           </article>
 
           <article className="info-block">
             <h3>Horarios</h3>
             <ul className="info-list">
-              <li>Martes 4:30 PM a 18:30 PM.</li>
-              <li>Jueves 4:30 a 18:30.</li>
+              <li>Cuautitlan: martes y jueves de 16:30 a 18:30 hrs.</li>
+              <li>Jaltenco: lunes a jueves de 16:00 a 18:30 hrs.</li>
             </ul>
           </article>
 
           <article className="info-block">
-            <h3>Formacion</h3>
+            <h3>Categorias y formacion</h3>
             <ul className="info-list">
-              <li>Formacion con valores en el futbol.</li>
-              <li>Categorias a partir de los 6 anos de edad.</li>
+              <li>Categorias desde los 6 años hasta los 20 años de edad.</li>
+              <li>Formacion deportiva y humana con identidad, respeto y disciplina.</li>
             </ul>
           </article>
 
@@ -46,11 +46,30 @@ function TeamView() {
             <h3>Direccion</h3>
             <ul className="info-list">
               <li><strong>Sede Camino a Santiago</strong></li>
-              <li>CALLE: CAMINO A SANTIAGO S/N. COL. EJIDOS DE SAN MATEO.</li>
-              <li>FRACC. SANTIAGO "CAMPOS MORLAN" CUATITLAN.</li>
+              <li>CALLE CAMINO A SANTIAGO S/N, COL. EJIDOS DE SAN MATEO IXTACALCO.</li>
+              <li>FRACC. SANTIAGO (CAMPOS MORLAN), CUAUTITLAN, EDOMEX.</li>
               <li>ESTADO DE MEXICO.</li>
               <li><strong>Sede Canchas GEO</strong></li>
-              <li>CANCHAS GEO, MZA 021 BAHIAS DE JALTENCO, ALBORADA JALTENGO.</li>
+              <li>BAHIAS DE JALTENCO, ALBORADA JALTENCO (CANCHAS GEO).</li>
+            </ul>
+          </article>
+
+          <article className="info-block">
+            <h3>Estructura deportiva</h3>
+            <ul className="info-list">
+              <li>Director General: D.T. Victor Miguel Salinas A.</li>
+              <li>Director Deportivo: D.T. R. Gamaliel Mendoza C.</li>
+              <li>Equipo con profesores, psicologos, promotores y asesores.</li>
+            </ul>
+          </article>
+
+          <article className="info-block">
+            <h3>Ventajas</h3>
+            <ul className="info-list">
+              <li>Escuela filial certificada en la zona de Cuautitlan.</li>
+              <li>Profesores capacitados y programas integrales de desarrollo.</li>
+              <li>Seguimiento academico y visorias semestrales.</li>
+              <li>Instalaciones en mantenimiento y costos accesibles.</li>
             </ul>
           </article>
         </div>

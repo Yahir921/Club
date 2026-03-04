@@ -8,10 +8,10 @@ function ContactView() {
         </div>
         <div className="info-grid">
           <article className="info-block">
-            <h3>WhatsApp</h3>
+            <h3>Informes / WhatsApp</h3>
             <ul className="info-list">
-              <li>5527561310</li>
-              <li>5545819295</li>
+              <li>55 2756 1310</li>
+              <li>55 4581 9295</li>
             </ul>
           </article>
 
