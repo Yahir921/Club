@@ -9,10 +9,18 @@ function ContactView() {
         <div className="info-grid">
           <article className="info-block">
             <h3>Informes / WhatsApp</h3>
-            <ul className="info-list">
-              <li>55 2756 1310</li>
-              <li>55 4581 9295</li>
-            </ul>
+            <div className="phone-list">
+              <a className="phone-card" href="tel:+525527561310" aria-label="Llamar al 55 2756 1310">
+                <span className="phone-label">Telefono 1</span>
+                <strong className="phone-number">55 2756 1310</strong>
+                <span className="phone-action">Llamar ahora</span>
+              </a>
+              <a className="phone-card" href="tel:+525545819295" aria-label="Llamar al 55 4581 9295">
+                <span className="phone-label">Telefono 2</span>
+                <strong className="phone-number">55 4581 9295</strong>
+                <span className="phone-action">Llamar ahora</span>
+              </a>
+            </div>
           </article>
 
           <article className="info-block">
