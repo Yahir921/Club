@@ -1,4 +1,5 @@
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '')
+const API_ROOT = API_BASE.endsWith('/api') ? API_BASE.slice(0, -4) : API_BASE
 let csrfToken = null
 
 export function setCsrfToken(token) {
@@ -44,4 +45,18 @@ export async function apiRequest(path, options = {}) {
   }
 
   return data
+}
+
+export function resolveAssetUrl(url) {
+  const value = String(url || '').trim()
+  if (!value) {
+    return ''
+  }
+
+  if (/^(https?:)?\/\//i.test(value) || value.startsWith('data:')) {
+    return value
+  }
+
+  const normalized = value.startsWith('/') ? value : `/${value}`
+  return `${API_ROOT}${normalized}`
 }

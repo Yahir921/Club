@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { apiRequest } from '../utils/api'
+import { apiRequest, resolveAssetUrl } from '../utils/api'
 
 function formatDate(dateValue) {
   if (!dateValue) {
@@ -150,7 +150,7 @@ function EventosView() {
                 <div className="event-media">
                   <img
                     className={`event-image-v2 ${isFinishedEvent(event.date) ? 'event-image-finished' : ''}`}
-                    src={event.image}
+                    src={resolveAssetUrl(event.image)}
                     alt={event.title}
                   />
                   <span className="event-status-chip">{eventStatus(event.date)}</span>
@@ -220,7 +220,7 @@ function EventosView() {
 
               <img
                 className={`event-modal-image ${isFinishedEvent(selectedEvent.date) ? 'event-image-finished' : ''}`}
-                src={selectedEvent.image}
+                src={resolveAssetUrl(selectedEvent.image)}
                 alt={selectedEvent.title}
               />
               <div className="event-modal-logo">

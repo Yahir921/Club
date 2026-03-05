@@ -34,19 +34,46 @@ if (!in_array($ext, $allowedExt, true)) {
     json_response(['ok' => false, 'message' => 'Formato no permitido'], 422);
 }
 
-$uploadDir = dirname(__DIR__) . '/public/eventos';
-if (!is_dir($uploadDir) && !mkdir($uploadDir, 0775, true) && !is_dir($uploadDir)) {
+$projectRoot = dirname(__DIR__);
+$uploadCandidates = [
+    ['dir' => $projectRoot . '/eventos', 'urlPrefix' => '/eventos'],
+    ['dir' => $projectRoot . '/public/eventos', 'urlPrefix' => '/public/eventos'],
+];
+
+$selected = null;
+foreach ($uploadCandidates as $candidate) {
+    $candidateDir = (string)$candidate['dir'];
+    if (!is_dir($candidateDir) && !mkdir($candidateDir, 0775, true) && !is_dir($candidateDir)) {
+        continue;
+    }
+
+    if (is_dir($candidateDir) && is_writable($candidateDir)) {
+        $selected = $candidate;
+        break;
+    }
+}
+
+if (!is_array($selected)) {
     json_response(['ok' => false, 'message' => 'No se pudo crear carpeta de subida'], 500);
 }
 
 $fileName = 'evento_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-$targetPath = $uploadDir . '/' . $fileName;
+$targetPath = (string)$selected['dir'] . '/' . $fileName;
 
 if (!move_uploaded_file($tmpPath, $targetPath)) {
     json_response(['ok' => false, 'message' => 'No se pudo guardar el archivo'], 500);
 }
 
+$scriptName = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '/api/upload.php'));
+$basePath = preg_replace('#/api/[^/]+$#', '', $scriptName);
+$basePath = rtrim((string)$basePath, '/');
+$relativeUrl = ($basePath === '' ? '' : $basePath) . (string)$selected['urlPrefix'] . '/' . $fileName;
+
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = (string)($_SERVER['HTTP_HOST'] ?? '');
+$publicUrl = $host !== '' ? $scheme . '://' . $host . $relativeUrl : $relativeUrl;
+
 json_response([
     'ok' => true,
-    'url' => '/eventos/' . $fileName,
+    'url' => $publicUrl,
 ]);

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { apiRequest, setCsrfToken } from '../utils/api'
+import { apiRequest, resolveAssetUrl, setCsrfToken } from '../utils/api'
 
 const emptyForm = {
   title: '',
@@ -563,7 +563,11 @@ function AdminLoginView() {
                             </td>
                             <td>
                               {eventItem.image ? (
-                                <img className="admin-table-image" src={eventItem.image} alt={eventItem.title} />
+                                <img
+                                  className="admin-table-image"
+                                  src={resolveAssetUrl(eventItem.image)}
+                                  alt={eventItem.title}
+                                />
                               ) : (
                                 'Sin foto'
                               )}
