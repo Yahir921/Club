@@ -17,6 +17,7 @@ if ($method === 'GET') {
                 'id' => (int)$row['id'],
                 'title' => (string)$row['title'],
                 'date' => (string)$row['event_date'],
+                'time' => (string)$row['details'],
                 'place' => (string)$row['place'],
                 'details' => (string)$row['details'],
                 'image' => (string)$row['image_url'],
@@ -28,17 +29,18 @@ if ($method === 'GET') {
 }
 
 require_admin();
+require_csrf_token();
 
 $body = request_body();
 
 if ($method === 'POST') {
     $title = trim((string)($body['title'] ?? ''));
     $date = trim((string)($body['date'] ?? ''));
+    $time = trim((string)($body['time'] ?? ''));
     $place = trim((string)($body['place'] ?? ''));
-    $details = trim((string)($body['details'] ?? ''));
     $image = trim((string)($body['image'] ?? ''));
 
-    if ($title === '' || $date === '' || $place === '' || $details === '') {
+    if ($title === '' || $date === '' || $time === '' || $place === '') {
         json_response(['ok' => false, 'message' => 'Campos obligatorios incompletos'], 422);
     }
 
@@ -53,7 +55,7 @@ if ($method === 'POST') {
         'title' => $title,
         'event_date' => $date,
         'place' => $place,
-        'details' => $details,
+        'details' => $time,
         'image_url' => $image,
     ]);
 
@@ -64,11 +66,11 @@ if ($method === 'PUT') {
     $id = (int)($body['id'] ?? 0);
     $title = trim((string)($body['title'] ?? ''));
     $date = trim((string)($body['date'] ?? ''));
+    $time = trim((string)($body['time'] ?? ''));
     $place = trim((string)($body['place'] ?? ''));
-    $details = trim((string)($body['details'] ?? ''));
     $image = trim((string)($body['image'] ?? ''));
 
-    if ($id <= 0 || $title === '' || $date === '' || $place === '' || $details === '') {
+    if ($id <= 0 || $title === '' || $date === '' || $time === '' || $place === '') {
         json_response(['ok' => false, 'message' => 'Datos invalidos para actualizar'], 422);
     }
 
@@ -84,7 +86,7 @@ if ($method === 'PUT') {
         'title' => $title,
         'event_date' => $date,
         'place' => $place,
-        'details' => $details,
+        'details' => $time,
         'image_url' => $image,
     ]);
 
@@ -103,4 +105,3 @@ if ($method === 'DELETE') {
 }
 
 json_response(['ok' => false, 'message' => 'Metodo no permitido'], 405);
-

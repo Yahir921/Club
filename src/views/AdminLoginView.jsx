@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
-import { apiRequest } from '../utils/api'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { apiRequest, setCsrfToken } from '../utils/api'
 
 const emptyForm = {
   title: '',
   date: '',
+  time: '',
   place: '',
-  details: '',
   image: '',
 }
 
@@ -19,6 +19,7 @@ function AdminLoginView() {
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState(null)
   const [busy, setBusy] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
   const sortedEvents = useMemo(() => [...events], [events])
 
@@ -34,6 +35,9 @@ function AdminLoginView() {
       try {
         const authData = await apiRequest('/auth.php', { method: 'GET' })
         if (isMounted) {
+          if (authData.csrfToken) {
+            setCsrfToken(authData.csrfToken)
+          }
           setIsLoggedIn(Boolean(authData.authenticated))
         }
       } catch {
@@ -64,6 +68,63 @@ function AdminLoginView() {
     })
   }, [isLoggedIn])
 
+  useEffect(() => {
+    if (!message) {
+      return undefined
+    }
+
+    const timer = window.setTimeout(() => {
+      setMessage('')
+    }, 3000)
+
+    return () => window.clearTimeout(timer)
+  }, [message])
+
+  const logoutSession = useCallback(async (reasonMessage = 'Sesion cerrada.') => {
+    await apiRequest('/auth.php', {
+      method: 'POST',
+      body: JSON.stringify({ action: 'logout' }),
+    })
+    setIsLoggedIn(false)
+    setEditingId(null)
+    setForm(emptyForm)
+    setMessage(reasonMessage)
+  }, [])
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      return undefined
+    }
+
+    let timeoutId
+    const inactivityMs = 5 * 60 * 1000
+    const activityEvents = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart']
+
+    const resetInactivityTimer = () => {
+      window.clearTimeout(timeoutId)
+      timeoutId = window.setTimeout(async () => {
+        try {
+          await logoutSession('Sesion cerrada por inactividad (5 minutos).')
+        } catch {
+          setMessage('No se pudo cerrar sesion automaticamente.')
+        }
+      }, inactivityMs)
+    }
+
+    activityEvents.forEach((eventName) => {
+      window.addEventListener(eventName, resetInactivityTimer, { passive: true })
+    })
+
+    resetInactivityTimer()
+
+    return () => {
+      window.clearTimeout(timeoutId)
+      activityEvents.forEach((eventName) => {
+        window.removeEventListener(eventName, resetInactivityTimer)
+      })
+    }
+  }, [isLoggedIn, logoutSession])
+
   const handleLogin = async (event) => {
     event.preventDefault()
     setBusy(true)
@@ -89,14 +150,7 @@ function AdminLoginView() {
     setBusy(true)
     setMessage('')
     try {
-      await apiRequest('/auth.php', {
-        method: 'POST',
-        body: JSON.stringify({ action: 'logout' }),
-      })
-      setIsLoggedIn(false)
-      setEditingId(null)
-      setForm(emptyForm)
-      setMessage('Sesion cerrada.')
+      await logoutSession('Sesion cerrada.')
     } catch (error) {
       setMessage(error.message)
     } finally {
@@ -143,11 +197,38 @@ function AdminLoginView() {
     setForm({
       title: eventItem.title || '',
       date: eventItem.date || '',
+      time: eventItem.time || eventItem.details || '',
       place: eventItem.place || '',
-      details: eventItem.details || '',
       image: eventItem.image || '',
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handlePhotoUpload = async (event) => {
+    const file = event.target.files?.[0]
+    if (!file) {
+      return
+    }
+
+    setUploading(true)
+    setMessage('')
+    try {
+      const payload = new FormData()
+      payload.append('photo', file)
+
+      const data = await apiRequest('/upload.php', {
+        method: 'POST',
+        body: payload,
+      })
+
+      setForm((prev) => ({ ...prev, image: data.url }))
+      setMessage('Foto subida correctamente.')
+    } catch (error) {
+      setMessage(error.message)
+    } finally {
+      setUploading(false)
+      event.target.value = ''
+    }
   }
 
   const handleDelete = async (eventId) => {
@@ -183,8 +264,11 @@ function AdminLoginView() {
   }
 
   return (
-    <main className="admin-login-page">
-      <section className="admin-login-card" aria-label="Acceso administrador">
+    <main className={`admin-login-page ${isLoggedIn ? 'admin-dashboard-page' : ''}`}>
+      <section
+        className={`admin-login-card ${isLoggedIn ? 'admin-dashboard-card' : ''}`}
+        aria-label="Acceso administrador"
+      >
         <p className="section-tag">Acceso Privado</p>
         <h1>{isLoggedIn ? 'Panel de Eventos' : 'Login Toluca'}</h1>
         <p className="admin-login-help">
@@ -227,104 +311,144 @@ function AdminLoginView() {
 
         {isLoggedIn && (
           <>
-            <form className="admin-login-form" onSubmit={handleEventSubmit}>
-              <label htmlFor="event-title">Titulo</label>
-              <input
-                id="event-title"
-                type="text"
-                value={form.title}
-                onChange={(event) => handleFormChange('title', event.target.value)}
-                required
-              />
-
-              <label htmlFor="event-date">Fecha</label>
-              <input
-                id="event-date"
-                type="text"
-                placeholder="Sabado 16 de marzo, 9:00 AM"
-                value={form.date}
-                onChange={(event) => handleFormChange('date', event.target.value)}
-                required
-              />
-
-              <label htmlFor="event-place">Sede</label>
-              <input
-                id="event-place"
-                type="text"
-                value={form.place}
-                onChange={(event) => handleFormChange('place', event.target.value)}
-                required
-              />
-
-              <label htmlFor="event-details">Descripcion</label>
-              <textarea
-                id="event-details"
-                className="admin-textarea"
-                value={form.details}
-                onChange={(event) => handleFormChange('details', event.target.value)}
-                required
-              />
-
-              <label htmlFor="event-image">Imagen (URL o ruta)</label>
-              <input
-                id="event-image"
-                type="text"
-                placeholder="/icono-red-toluca.png"
-                value={form.image}
-                onChange={(event) => handleFormChange('image', event.target.value)}
-              />
-
-              <div className="admin-actions">
-                <button type="submit" className="admin-login-btn" disabled={busy}>
-                  {editingId ? 'Guardar cambios' : 'Crear evento'}
-                </button>
-                {editingId && (
-                  <button
-                    type="button"
-                    className="admin-secondary-btn"
-                    onClick={() => {
-                      setEditingId(null)
-                      setForm(emptyForm)
-                    }}
-                  >
-                    Cancelar edicion
-                  </button>
-                )}
-              </div>
-            </form>
-
-            <div className="admin-list">
-              <h2>Eventos registrados</h2>
-              {sortedEvents.length === 0 && <p>No hay eventos registrados.</p>}
-              {sortedEvents.map((eventItem) => (
-                <article key={eventItem.id} className="admin-event-item">
-                  <h3>{eventItem.title}</h3>
-                  <p><strong>Fecha:</strong> {eventItem.date}</p>
-                  <p><strong>Sede:</strong> {eventItem.place}</p>
-                  <p>{eventItem.details}</p>
-                  <div className="admin-item-actions">
-                    <button
-                      type="button"
-                      className="admin-secondary-btn"
-                      onClick={() => handleEdit(eventItem)}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      type="button"
-                      className="admin-danger-btn"
-                      onClick={() => handleDelete(eventItem.id)}
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                </article>
-              ))}
+            <div className="admin-dashboard-top">
+              <button type="button" className="admin-secondary-btn logout-btn" onClick={handleLogout}>
+                Cerrar sesion
+              </button>
             </div>
 
-            <button type="button" className="admin-secondary-btn logout-btn" onClick={handleLogout}>
-              Cerrar sesion
-            </button>
+            <div className="admin-dashboard-layout">
+              <section className="admin-panel admin-panel-form">
+                <h2>Agregar o editar evento</h2>
+                <form className="admin-login-form" onSubmit={handleEventSubmit}>
+                  <label htmlFor="event-title">Nombre del evento</label>
+                  <input
+                    id="event-title"
+                    type="text"
+                    value={form.title}
+                    onChange={(event) => handleFormChange('title', event.target.value)}
+                    required
+                  />
+
+                  <label htmlFor="event-date">Fecha</label>
+                  <input
+                    id="event-date"
+                    type="date"
+                    value={form.date}
+                    onChange={(event) => handleFormChange('date', event.target.value)}
+                    required
+                  />
+
+                  <label htmlFor="event-time">Hora</label>
+                  <input
+                    id="event-time"
+                    type="time"
+                    value={form.time}
+                    onChange={(event) => handleFormChange('time', event.target.value)}
+                    required
+                  />
+
+                  <label htmlFor="event-place">Lugar</label>
+                  <input
+                    id="event-place"
+                    type="text"
+                    value={form.place}
+                    onChange={(event) => handleFormChange('place', event.target.value)}
+                    required
+                  />
+
+                  <label htmlFor="event-photo">Fotos del evento</label>
+                  <input
+                    id="event-photo"
+                    className="admin-file-input"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={handlePhotoUpload}
+                  />
+                  <p className="admin-help-line">
+                    {uploading
+                      ? 'Subiendo foto...'
+                      : form.image
+                        ? `Foto lista: ${form.image}`
+                        : 'Sube una foto para el evento.'}
+                  </p>
+
+                  <div className="admin-actions">
+                    <button type="submit" className="admin-login-btn" disabled={busy}>
+                      {editingId ? 'Guardar cambios' : 'Crear evento'}
+                    </button>
+                    {editingId && (
+                      <button
+                        type="button"
+                        className="admin-secondary-btn"
+                        onClick={() => {
+                          setEditingId(null)
+                          setForm(emptyForm)
+                        }}
+                      >
+                        Cancelar edicion
+                      </button>
+                    )}
+                  </div>
+                </form>
+              </section>
+
+              <section className="admin-panel admin-list">
+                <h2>Eventos registrados</h2>
+                {sortedEvents.length === 0 && <p>No hay eventos registrados.</p>}
+                {sortedEvents.length > 0 && (
+                  <div className="admin-table-wrap">
+                    <table className="admin-table">
+                      <thead>
+                        <tr>
+                          <th>Evento</th>
+                          <th>Fecha</th>
+                          <th>Hora</th>
+                          <th>Lugar</th>
+                          <th>Foto</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sortedEvents.map((eventItem) => (
+                          <tr key={eventItem.id}>
+                            <td>{eventItem.title}</td>
+                            <td>{eventItem.date}</td>
+                            <td>{eventItem.time || eventItem.details}</td>
+                            <td>{eventItem.place}</td>
+                            <td>
+                              {eventItem.image ? (
+                                <img className="admin-table-image" src={eventItem.image} alt={eventItem.title} />
+                              ) : (
+                                'Sin foto'
+                              )}
+                            </td>
+                            <td>
+                              <div className="admin-table-actions">
+                                <button
+                                  type="button"
+                                  className="admin-secondary-btn"
+                                  onClick={() => handleEdit(eventItem)}
+                                >
+                                  Editar
+                                </button>
+                                <button
+                                  type="button"
+                                  className="admin-danger-btn"
+                                  onClick={() => handleDelete(eventItem.id)}
+                                >
+                                  Eliminar
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </section>
+            </div>
           </>
         )}
       </section>

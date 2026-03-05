@@ -60,3 +60,7 @@ npm run lint
 ## Nota de seguridad
 
 La URL oculta no protege por si sola. La proteccion real esta en PHP con sesion y validacion de endpoints.
+
+Adicionalmente ya esta implementado:
+- CSRF token para `auth`, `events` y `upload`.
+- Limite de intentos de login: 5 intentos por 5 minutos (por IP/usuario).
