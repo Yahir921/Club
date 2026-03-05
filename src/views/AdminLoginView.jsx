@@ -6,7 +6,89 @@ const emptyForm = {
   date: '',
   time: '',
   place: '',
+  placeUrl: '',
   image: '',
+}
+
+const emptyTimeFields = {
+  hour: '',
+  minute: '',
+  period: 'AM',
+}
+
+function normalizeTimeValue(value) {
+  const trimmed = String(value || '').trim()
+  const match = trimmed.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/)
+  if (!match) {
+    return ''
+  }
+
+  const hours = Number(match[1])
+  const minutes = Number(match[2])
+  if (
+    Number.isNaN(hours) ||
+    Number.isNaN(minutes) ||
+    hours < 0 ||
+    hours > 23 ||
+    minutes < 0 ||
+    minutes > 59
+  ) {
+    return ''
+  }
+
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+}
+
+function splitTimeValue(value) {
+  const normalized = normalizeTimeValue(value)
+  if (!normalized) {
+    return { ...emptyTimeFields }
+  }
+
+  const [hoursStr, minute] = normalized.split(':')
+  const hours = Number(hoursStr)
+  const period = hours >= 12 ? 'PM' : 'AM'
+  const hour12 = hours % 12 === 0 ? 12 : hours % 12
+
+  return { hour: String(hour12), minute, period }
+}
+
+function timeFieldsToNormalized(fields) {
+  const hourNumber = Number(fields.hour)
+  const minuteNumber = Number(fields.minute)
+  const period = String(fields.period || '').toUpperCase()
+
+  if (
+    Number.isNaN(hourNumber) ||
+    Number.isNaN(minuteNumber) ||
+    hourNumber < 1 ||
+    hourNumber > 12 ||
+    minuteNumber < 0 ||
+    minuteNumber > 59 ||
+    (period !== 'AM' && period !== 'PM')
+  ) {
+    return ''
+  }
+
+  let hour24 = hourNumber % 12
+  if (period === 'PM') {
+    hour24 += 12
+  }
+
+  return `${String(hour24).padStart(2, '0')}:${String(minuteNumber).padStart(2, '0')}`
+}
+
+function formatDisplayTime(value) {
+  const normalized = normalizeTimeValue(value)
+  if (!normalized) {
+    return value || '-'
+  }
+
+  const [hoursStr, minutes] = normalized.split(':')
+  const hours = Number(hoursStr)
+  const suffix = hours >= 12 ? 'pm' : 'am'
+  const twelveHour = hours % 12 === 0 ? 12 : hours % 12
+  return `${twelveHour}:${minutes} ${suffix}`
 }
 
 function AdminLoginView() {
@@ -17,6 +99,7 @@ function AdminLoginView() {
   const [message, setMessage] = useState('')
   const [events, setEvents] = useState([])
   const [form, setForm] = useState(emptyForm)
+  const [timeFields, setTimeFields] = useState(emptyTimeFields)
   const [editingId, setEditingId] = useState(null)
   const [busy, setBusy] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -88,6 +171,7 @@ function AdminLoginView() {
     setIsLoggedIn(false)
     setEditingId(null)
     setForm(emptyForm)
+    setTimeFields(emptyTimeFields)
     setMessage(reasonMessage)
   }, [])
 
@@ -162,27 +246,39 @@ function AdminLoginView() {
     setForm((prev) => ({ ...prev, [field]: value }))
   }
 
+  const handleTimePartChange = (part, value) => {
+    setTimeFields((prev) => ({ ...prev, [part]: value }))
+  }
+
   const handleEventSubmit = async (event) => {
     event.preventDefault()
     setBusy(true)
     setMessage('')
 
     try {
+      const normalizedTime = timeFieldsToNormalized(timeFields)
+      if (!normalizedTime) {
+        throw new Error('Hora invalida. Usa hora, minuto y AM/PM.')
+      }
+
+      const payload = { ...form, time: normalizedTime }
+
       if (editingId) {
         await apiRequest('/events.php', {
           method: 'PUT',
-          body: JSON.stringify({ id: editingId, ...form }),
+          body: JSON.stringify({ id: editingId, ...payload }),
         })
         setMessage('Evento actualizado.')
       } else {
         await apiRequest('/events.php', {
           method: 'POST',
-          body: JSON.stringify(form),
+          body: JSON.stringify(payload),
         })
         setMessage('Evento creado.')
       }
 
       setForm(emptyForm)
+      setTimeFields(emptyTimeFields)
       setEditingId(null)
       await loadEvents()
     } catch (error) {
@@ -193,14 +289,17 @@ function AdminLoginView() {
   }
 
   const handleEdit = (eventItem) => {
+    const parsedTime = splitTimeValue(eventItem.time || eventItem.details || '')
     setEditingId(eventItem.id)
     setForm({
       title: eventItem.title || '',
       date: eventItem.date || '',
-      time: eventItem.time || eventItem.details || '',
+      time: normalizeTimeValue(eventItem.time || eventItem.details || ''),
       place: eventItem.place || '',
+      placeUrl: eventItem.placeUrl || '',
       image: eventItem.image || '',
     })
+    setTimeFields(parsedTime)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -340,13 +439,41 @@ function AdminLoginView() {
                   />
 
                   <label htmlFor="event-time">Hora</label>
-                  <input
-                    id="event-time"
-                    type="time"
-                    value={form.time}
-                    onChange={(event) => handleFormChange('time', event.target.value)}
-                    required
-                  />
+                  <div id="event-time" className="admin-time-fields">
+                    <input
+                      aria-label="Hora"
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Hr"
+                      maxLength={2}
+                      value={timeFields.hour}
+                      onChange={(event) =>
+                        handleTimePartChange('hour', event.target.value.replace(/\D/g, '').slice(0, 2))
+                      }
+                      required
+                    />
+                    <input
+                      aria-label="Minuto"
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Min"
+                      maxLength={2}
+                      value={timeFields.minute}
+                      onChange={(event) =>
+                        handleTimePartChange('minute', event.target.value.replace(/\D/g, '').slice(0, 2))
+                      }
+                      required
+                    />
+                    <select
+                      aria-label="Periodo"
+                      value={timeFields.period}
+                      onChange={(event) => handleTimePartChange('period', event.target.value)}
+                      required
+                    >
+                      <option value="AM">AM</option>
+                      <option value="PM">PM</option>
+                    </select>
+                  </div>
 
                   <label htmlFor="event-place">Lugar</label>
                   <input
@@ -355,6 +482,15 @@ function AdminLoginView() {
                     value={form.place}
                     onChange={(event) => handleFormChange('place', event.target.value)}
                     required
+                  />
+
+                  <label htmlFor="event-place-url">URL del lugar</label>
+                  <input
+                    id="event-place-url"
+                    type="url"
+                    placeholder="https://maps.google.com/..."
+                    value={form.placeUrl}
+                    onChange={(event) => handleFormChange('placeUrl', event.target.value)}
                   />
 
                   <label htmlFor="event-photo">Fotos del evento</label>
@@ -384,6 +520,7 @@ function AdminLoginView() {
                         onClick={() => {
                           setEditingId(null)
                           setForm(emptyForm)
+                          setTimeFields(emptyTimeFields)
                         }}
                       >
                         Cancelar edicion
@@ -414,8 +551,16 @@ function AdminLoginView() {
                           <tr key={eventItem.id}>
                             <td>{eventItem.title}</td>
                             <td>{eventItem.date}</td>
-                            <td>{eventItem.time || eventItem.details}</td>
-                            <td>{eventItem.place}</td>
+                            <td>{formatDisplayTime(eventItem.time || eventItem.details)}</td>
+                            <td>
+                              {eventItem.placeUrl ? (
+                                <a href={eventItem.placeUrl} target="_blank" rel="noopener noreferrer">
+                                  {eventItem.place}
+                                </a>
+                              ) : (
+                                eventItem.place
+                              )}
+                            </td>
                             <td>
                               {eventItem.image ? (
                                 <img className="admin-table-image" src={eventItem.image} alt={eventItem.title} />

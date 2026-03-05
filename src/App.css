@@ -158,6 +158,32 @@ body.menu-open {
   background: #fff;
 }
 
+.admin-time-fields {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: fit-content;
+}
+
+.admin-time-fields select,
+.admin-time-fields input {
+  border: 1px solid #d8c8b7;
+  border-radius: 10px;
+  padding: 0.62rem 0.55rem;
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+}
+
+.admin-time-fields select {
+  width: 4.6rem;
+}
+
+.admin-time-fields input {
+  width: 4rem;
+  text-align: center;
+}
+
 .admin-login-form input[type="file"] {
   padding: 0.5rem;
   border-style: dashed;
@@ -200,6 +226,18 @@ body.menu-open {
 }
 
 .admin-login-form input:focus {
+  border-color: var(--accent-dark);
+  box-shadow: 0 0 0 3px rgba(137, 22, 13, 0.14);
+  outline: none;
+}
+
+.admin-time-fields select:focus {
+  border-color: var(--accent-dark);
+  box-shadow: 0 0 0 3px rgba(137, 22, 13, 0.14);
+  outline: none;
+}
+
+.admin-time-fields input:focus {
   border-color: var(--accent-dark);
   box-shadow: 0 0 0 3px rgba(137, 22, 13, 0.14);
   outline: none;
