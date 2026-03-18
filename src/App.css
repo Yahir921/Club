@@ -80,7 +80,42 @@ body.menu-open {
 
 .admin-dashboard-top {
   display: flex;
+  align-items: center;
+  gap: 0.7rem;
   justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.admin-tab-nav {
+  margin-right: auto;
+  display: inline-flex;
+  gap: 0.45rem;
+}
+
+.admin-tab-btn {
+  border: 1px solid #c9b39e;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 700;
+  padding: 0.48rem 0.9rem;
+  cursor: pointer;
+}
+
+.admin-tab-btn.is-active {
+  border-color: var(--accent-dark);
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.admin-home-gallery-panel {
+  margin-top: 0.95rem;
+}
+
+.admin-current-context {
+  margin: 0.55rem 0 0.3rem;
+  color: #5f5248;
+  font-size: 0.92rem;
 }
 
 .admin-dashboard-layout {
@@ -378,6 +413,10 @@ body.menu-open {
   border-bottom: 1px solid #eee2d4;
 }
 
+.admin-table tbody tr:nth-child(even) {
+  background: #fffaf5;
+}
+
 .admin-table th {
   background: #fff7ef;
   color: #7c2a22;
@@ -402,6 +441,30 @@ body.menu-open {
   display: flex;
   gap: 0.45rem;
   flex-wrap: wrap;
+}
+
+.admin-home-gallery-grid {
+  padding: 0.85rem 0.9rem 0.95rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.admin-home-slot {
+  border: 1px solid #e7d7c8;
+  border-radius: 12px;
+  background: #fff;
+  padding: 0.7rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.admin-home-slot-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #eadbca;
 }
 
 .logout-btn {
@@ -1626,6 +1689,10 @@ main {
 
 @media (max-width: 900px) {
   .admin-dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-home-gallery-grid {
     grid-template-columns: 1fr;
   }
 

@@ -16,3 +16,13 @@ CREATE TABLE IF NOT EXISTS events (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS home_gallery (
+  slot TINYINT UNSIGNED PRIMARY KEY,
+  image_url VARCHAR(255) NOT NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT IGNORE INTO home_gallery (slot, image_url) VALUES
+  (1, '/galeria/Imagen 1.jpeg'),
+  (2, '/galeria/Imagen 2.jpeg'),
+  (3, '/galeria/Imagen 3.jpeg');

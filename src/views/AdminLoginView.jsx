@@ -16,6 +16,12 @@ const emptyTimeFields = {
   period: 'AM',
 }
 
+const homeSlotLabels = {
+  1: 'Imagen principal 1',
+  2: 'Imagen principal 2',
+  3: 'Imagen principal 3',
+}
+
 function normalizeTimeValue(value) {
   const trimmed = String(value || '').trim()
   const match = trimmed.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/)
@@ -92,23 +98,31 @@ function formatDisplayTime(value) {
 }
 
 function AdminLoginView() {
+  const [activeAdminTab, setActiveAdminTab] = useState('eventos')
   const [authChecked, setAuthChecked] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const [events, setEvents] = useState([])
+  const [homeGallery, setHomeGallery] = useState([])
   const [form, setForm] = useState(emptyForm)
   const [timeFields, setTimeFields] = useState(emptyTimeFields)
   const [editingId, setEditingId] = useState(null)
   const [busy, setBusy] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [galleryBusySlot, setGalleryBusySlot] = useState(null)
 
   const sortedEvents = useMemo(() => [...events], [events])
 
   const loadEvents = async () => {
     const data = await apiRequest('/events.php')
     setEvents(data.events || [])
+  }
+
+  const loadHomeGallery = async () => {
+    const data = await apiRequest('/homepage_gallery.php')
+    setHomeGallery(data.images || [])
   }
 
   useEffect(() => {
@@ -143,11 +157,12 @@ function AdminLoginView() {
   useEffect(() => {
     if (!isLoggedIn) {
       setEvents([])
+      setHomeGallery([])
       return
     }
 
-    loadEvents().catch(() => {
-      setMessage('No se pudieron cargar los eventos.')
+    Promise.all([loadEvents(), loadHomeGallery()]).catch(() => {
+      setMessage('No se pudieron cargar los datos del panel admin.')
     })
   }, [isLoggedIn])
 
@@ -169,6 +184,7 @@ function AdminLoginView() {
       body: JSON.stringify({ action: 'logout' }),
     })
     setIsLoggedIn(false)
+    setActiveAdminTab('eventos')
     setEditingId(null)
     setForm(emptyForm)
     setTimeFields(emptyTimeFields)
@@ -352,6 +368,41 @@ function AdminLoginView() {
     }
   }
 
+  const handleHomeImageUpload = async (slot, event) => {
+    const file = event.target.files?.[0]
+    if (!file) {
+      return
+    }
+
+    setGalleryBusySlot(slot)
+    setMessage('')
+    try {
+      const payload = new FormData()
+      payload.append('photo', file)
+
+      const uploadData = await apiRequest('/upload.php', {
+        method: 'POST',
+        body: payload,
+      })
+
+      await apiRequest('/homepage_gallery.php', {
+        method: 'PUT',
+        body: JSON.stringify({
+          slot,
+          image: uploadData.url,
+        }),
+      })
+
+      await loadHomeGallery()
+      setMessage(`Se actualizo ${homeSlotLabels[slot] || `imagen ${slot}`}.`)
+    } catch (error) {
+      setMessage(error.message)
+    } finally {
+      setGalleryBusySlot(null)
+      event.target.value = ''
+    }
+  }
+
   if (!authChecked) {
     return (
       <main className="admin-login-page">
@@ -369,10 +420,18 @@ function AdminLoginView() {
         aria-label="Acceso administrador"
       >
         <p className="section-tag">Acceso Privado</p>
-        <h1>{isLoggedIn ? 'Panel de Eventos' : 'Login Toluca'}</h1>
+        <h1>
+          {isLoggedIn
+            ? activeAdminTab === 'inicio'
+              ? 'Panel de Imagenes de Inicio'
+              : 'Panel de Eventos'
+            : 'Login Toluca'}
+        </h1>
         <p className="admin-login-help">
           {isLoggedIn
-            ? 'Administra eventos publicados en la seccion informativa.'
+            ? activeAdminTab === 'inicio'
+              ? 'Administra las imagenes que se muestran en la pagina de inicio.'
+              : 'Administra eventos publicados en la seccion informativa.'
             : 'Esta seccion es solo para administradores. Inicia sesion para gestionar contenido.'}
         </p>
 
@@ -411,11 +470,38 @@ function AdminLoginView() {
         {isLoggedIn && (
           <>
             <div className="admin-dashboard-top">
+              <div className="admin-tab-nav" role="tablist" aria-label="Secciones de administracion">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeAdminTab === 'eventos'}
+                  className={`admin-tab-btn ${activeAdminTab === 'eventos' ? 'is-active' : ''}`}
+                  onClick={() => setActiveAdminTab('eventos')}
+                >
+                  Eventos
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeAdminTab === 'inicio'}
+                  className={`admin-tab-btn ${activeAdminTab === 'inicio' ? 'is-active' : ''}`}
+                  onClick={() => setActiveAdminTab('inicio')}
+                >
+                  Inicio
+                </button>
+              </div>
               <button type="button" className="admin-secondary-btn logout-btn" onClick={handleLogout}>
                 Cerrar sesion
               </button>
             </div>
+            <p className="admin-current-context">
+              {activeAdminTab === 'eventos'
+                ? 'Gestiona eventos: crea, edita y elimina.'
+                : 'Gestiona las 3 fotos que aparecen en la pagina de inicio.'}
+            </p>
 
+            {activeAdminTab === 'eventos' && (
+              <>
             <div className="admin-dashboard-layout">
               <section className="admin-panel admin-panel-form">
                 <h2>Agregar o editar evento</h2>
@@ -530,74 +616,106 @@ function AdminLoginView() {
                 </form>
               </section>
 
-              <section className="admin-panel admin-list">
-                <h2>Eventos registrados</h2>
-                {sortedEvents.length === 0 && <p>No hay eventos registrados.</p>}
-                {sortedEvents.length > 0 && (
-                  <div className="admin-table-wrap">
-                    <table className="admin-table">
-                      <thead>
-                        <tr>
-                          <th>Evento</th>
-                          <th>Fecha</th>
-                          <th>Hora</th>
-                          <th>Lugar</th>
-                          <th>Foto</th>
-                          <th>Acciones</th>
+            <section className="admin-panel admin-list">
+              <h2>Eventos registrados</h2>
+              {sortedEvents.length === 0 && <p>No hay eventos registrados.</p>}
+              {sortedEvents.length > 0 && (
+                <div className="admin-table-wrap">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Evento</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Lugar</th>
+                        <th>Foto</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sortedEvents.map((eventItem) => (
+                        <tr key={eventItem.id}>
+                          <td>{eventItem.title}</td>
+                          <td>{eventItem.date}</td>
+                          <td>{formatDisplayTime(eventItem.time || eventItem.details)}</td>
+                          <td>
+                            {eventItem.placeUrl ? (
+                              <a href={eventItem.placeUrl} target="_blank" rel="noopener noreferrer">
+                                {eventItem.place}
+                              </a>
+                            ) : (
+                              eventItem.place
+                            )}
+                          </td>
+                          <td>
+                            {eventItem.image ? (
+                              <img
+                                className="admin-table-image"
+                                src={resolveAssetUrl(eventItem.image)}
+                                alt={eventItem.title}
+                              />
+                            ) : (
+                              'Sin foto'
+                            )}
+                          </td>
+                          <td>
+                            <div className="admin-table-actions">
+                              <button
+                                type="button"
+                                className="admin-secondary-btn"
+                                onClick={() => handleEdit(eventItem)}
+                              >
+                                Editar
+                              </button>
+                              <button
+                                type="button"
+                                className="admin-danger-btn"
+                                onClick={() => handleDelete(eventItem.id)}
+                              >
+                                Eliminar
+                              </button>
+                            </div>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {sortedEvents.map((eventItem) => (
-                          <tr key={eventItem.id}>
-                            <td>{eventItem.title}</td>
-                            <td>{eventItem.date}</td>
-                            <td>{formatDisplayTime(eventItem.time || eventItem.details)}</td>
-                            <td>
-                              {eventItem.placeUrl ? (
-                                <a href={eventItem.placeUrl} target="_blank" rel="noopener noreferrer">
-                                  {eventItem.place}
-                                </a>
-                              ) : (
-                                eventItem.place
-                              )}
-                            </td>
-                            <td>
-                              {eventItem.image ? (
-                                <img
-                                  className="admin-table-image"
-                                  src={resolveAssetUrl(eventItem.image)}
-                                  alt={eventItem.title}
-                                />
-                              ) : (
-                                'Sin foto'
-                              )}
-                            </td>
-                            <td>
-                              <div className="admin-table-actions">
-                                <button
-                                  type="button"
-                                  className="admin-secondary-btn"
-                                  onClick={() => handleEdit(eventItem)}
-                                >
-                                  Editar
-                                </button>
-                                <button
-                                  type="button"
-                                  className="admin-danger-btn"
-                                  onClick={() => handleDelete(eventItem.id)}
-                                >
-                                  Eliminar
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </section>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
             </div>
+              </>
+            )}
+
+            {activeAdminTab === 'inicio' && (
+              <section className="admin-panel admin-panel-form admin-home-gallery-panel">
+                <h2>Imagenes de Inicio</h2>
+                <div className="admin-home-gallery-grid">
+                  {[1, 2, 3].map((slot) => {
+                    const current = homeGallery.find((item) => item.slot === slot)
+                    return (
+                      <div className="admin-home-slot" key={slot}>
+                        <label>{homeSlotLabels[slot]}</label>
+                        {current?.image && (
+                          <img
+                            className="admin-home-slot-image"
+                            src={resolveAssetUrl(current.image)}
+                            alt={homeSlotLabels[slot]}
+                          />
+                        )}
+                        <input
+                          className="admin-file-input"
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp"
+                          onChange={(event) => handleHomeImageUpload(slot, event)}
+                          disabled={galleryBusySlot === slot}
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
+              </section>
+            )}
           </>
         )}
       </section>
